@@ -1,0 +1,76 @@
+
+
+import runStatus
+import MangaCMSOld.ScrapePlugins.M.FoolSlide.FoolSlideDownloadBase
+import MangaCMSOld.ScrapePlugins.M.FoolSlide.FoolSlideFetchBase
+
+
+import MangaCMS.ScrapePlugins.RunBase
+import settings
+import time
+
+
+class ContentLoader(MangaCMSOld.ScrapePlugins.M.FoolSlide.FoolSlideDownloadBase.FoolContentLoader):
+
+
+
+
+	loggerPath = "Main.Manga.GoMCo.Cl"
+	tableKey = "gomco"
+	pluginName = "GoManga.co Scans Content Retreiver"
+	dbName = settings.DATABASE_DB_NAME
+	tableName = "MangaItems"
+	groupName = "GoManga.co"
+
+
+	retreivalThreads = 1
+
+	contentSelector = ('article', 'content')
+
+
+class FeedLoader(MangaCMSOld.ScrapePlugins.M.FoolSlide.FoolSlideFetchBase.FoolFeedLoader):
+
+
+
+	loggerPath = "Main.Manga.GoMCo.Fl"
+	pluginName = "GoManga.co Scans Link Retreiver"
+	tableKey = "gomco"
+	dbName = settings.DATABASE_DB_NAME
+
+
+	tableName = "MangaItems"
+
+	urlBase = "http://gomanga.co/reader/"
+	feedUrl = urlBase+"latest/{num}/"
+
+
+
+
+class Runner(MangaCMS.ScrapePlugins.RunBase.ScraperBase):
+	loggerPath = "Main.Manga.GoMCo.Run"
+
+	pluginName = "GoMangaCoLoader"
+
+	sourceName = "GoManga"
+
+	feedLoader = FeedLoader
+	contentLoader = ContentLoader
+
+
+if __name__ == '__main__':
+	import utilities.testBase as tb
+
+	with tb.testSetup():
+		# fl = Runner()
+		# fl.go()
+
+		cl = ContentLoader()
+		cl.do_fetch_content()
+
+		# ret = cl.getImageUrls("https://gomanga.co/reader/read/golden_times/en/0/4/page/4/")
+		# print(ret)
+		# ret = cl.getImageUrls("http://reader.roseliascans.com/read/futari_ecchi/en/24/225/")
+		# print(ret)
+		# ret = cl.getImageUrls("http://reader.s2smanga.com/read/dimension_w/en/4/31/5/page/1")
+		# print(ret)
+

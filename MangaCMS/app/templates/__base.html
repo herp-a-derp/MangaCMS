@@ -1,0 +1,47 @@
+
+{%- import '_css_macros.html' as css_macros with context -%}
+
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<!-- Base template header -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
+		
+		{%- if title -%}
+			<title>MangoCMS - {{ title }}</title>
+		{%- else -%}
+			<title>MangoCMS</title>
+		{%- endif -%}
+
+		<!-- Sub template header -->
+		{%- block header -%}{%- endblock -%}
+		<!-- template header end -->
+	</head>
+	<body>
+		<div class='body_table'>
+			<div class="body_td_left">
+				{%- include '_block_nav.html' -%}
+			</div>
+			<div class="body_td_right">
+				{%- block content -%}{%- endblock -%}
+			</div>
+
+		</div>
+
+
+
+	</body>
+
+	<!-- Base template footer -->
+	<link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+	<script src="/static/js/jquery-latest.js"></script>
+
+	{{css_macros.gen_css()}}
+
+	<!-- Sub template-footer -->
+	{%- block footer -%}{%- endblock -%}
+	<!-- Template footer end -->
+</html>

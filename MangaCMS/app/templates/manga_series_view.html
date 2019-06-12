@@ -1,0 +1,71 @@
+<!-- extend base layout -->
+
+{% import '_macros.html' as util_macros %}
+
+{%- macro section_table_header() -%}
+	<table class='table-striped table table-bordered table-condensed' style="table-layout: fixed;">
+
+		<tr>
+				<th class="uncoloured" style="width: 40px; min-width: 40px;">Date</th>
+				<th class="uncoloured" style="width: 40px; min-width: 40px;">St</th>
+				<th class="uncoloured">BaseName</th>
+				<th class="uncoloured" style="width: 250px; min-width: 200px;">Series</th>
+		</tr>
+
+{%- endmacro -%}
+
+{%- macro render_folder_row(row_info, directory) -%}
+
+	{%- set vol, chp, filename, fqfilename, filesize = row_info -%}
+
+	<tr>
+		<td>{{ vol | int }}</td>
+		<td>{{ chp | int }}</td>
+
+		<td>{{util_macros.createMangaFileLink(filename, directory, fqfilename)}}</td>
+		<td>{{ filesize }}</td>
+	</tr>
+
+{%- endmacro -%}
+
+
+{%- macro section_table_footer() -%}
+	</table>
+{%- endmacro -%}
+
+{%- macro render_section(pkey, files) -%}
+	<div>
+		<h4>Dir: {{pkey['fqPath']}}</h4>
+		{{section_table_header()}}
+			{%- for item in files -%}
+				{{ render_folder_row(item, pkey['fqPath']) }}
+			{%- endfor -%}
+		{{section_table_footer()}}
+	</div>
+{%- endmacro -%}
+
+{% extends "__base.html" %}
+{% block content %}
+	{% include '_block_flash.html' %}
+	<div class='subdiv skid'>
+		<div id='manga_block'>
+			<h3>Series: {{series_meta['item']}}</h3>
+
+			{%- for directory, pkey, files in sections -%}
+				{{- render_section(pkey, files) -}}
+			{%- endfor -%}
+
+			## Section: {{sections}}
+
+			## Filter Params: {{params}}
+			## {manga_block(items, params)}
+			## { util_macros.render_pagination(items, url_for_param=url_for_param, extra_kwargs=params) }
+		</div>
+	</div>
+{% endblock %}
+
+{%- block footer -%}
+	<script>
+		{{util_macros.mouseOverJs(key='showTT')}}
+	</script>
+{%- endblock -%}

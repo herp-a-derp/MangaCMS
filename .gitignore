@@ -1,0 +1,33 @@
+/.svn
+
+__pycache__
+/bak
+/*.lwp
+/ctntCache
+/dbSnapshot.sql
+/ghostdriver.log
+/have.list
+/links - Copy (2).db
+/links - Copy (3).db
+/links - Copy.db
+/links.db
+/listing.data
+/logs
+/settings.py
+
+/*.pyc
+
+/links.db-shm
+/links.db-wal
+
+/listSorter/logs
+/BookCache/
+/waterStripper/cvtest/out
+/waterStripper/cvtest/tests
+deploy.shim
+*.pyc
+/covers
+/FeedScrape/cert
+/decr
+/venv
+/ScrapePlugins/H/SadPandaLoader/deploy.shim

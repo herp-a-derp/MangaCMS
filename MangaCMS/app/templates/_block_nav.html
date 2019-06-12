@@ -1,0 +1,43 @@
+
+<div class="well well-tny">
+	<h3 style='margin-top: 3px; width: 95px !important; text-align: center;'>Navi</h3>
+
+	<div class='nav-item'><a href='/'>Home</a></div>
+	<div class='nav-item'><a href='/status'>Status</a></div>
+	<br>
+	<div class='nav-item'><a href='/reader'>Reader</a></div>
+	<div class='nav-item'><a href='/bmanga'>Manga Updates</a></div>
+	<br>
+	<br>
+	<div class='nav-item'><a href='/manga/'>All Mango</a></div>
+	{%- for scraper in manga_scrapers -%}
+		{%- if scraper['renderSideBar'] and scraper["key"] -%}
+			<div class='nav-item'> - <a href='{{url_for('manga_by_site_view', page=1, source_site=scraper["key"])}}'>{{scraper['name'][:9]}}</a></div>
+		{%- endif -%}
+	{%- endfor -%}
+
+
+	{%- if ip_in_whitelist() -%}
+		<br>
+		<div class='nav-item'><a href='/hentai/'>All Hentai</a></div>
+		{%- for scraper in hentai_scrapers -%}
+			{%- if scraper['renderSideBar'] and scraper["key"] -%}
+				<div class='nav-item'> - <a href='{{url_for('hentai_by_site_view', page=1, source_site=scraper["key"])}}'>{{scraper['name'][:9]}}</a></div>
+			{%- endif -%}
+		{%- endfor -%}
+	{%- endif -%}
+	<br>
+	<hr>
+	<br>
+	<div class='nav-item'><a href='/errors/h/'>Manga Errors</a></div>
+	{%- if ip_in_whitelist() -%}
+		<div class='nav-item'><a href='/errors/m/'>Hentai Errors</a></div>
+	{%- endif -%}
+	<br>
+	<hr>
+	<br>
+	<div class='nav-item'><a href='/debug/tools'>Debug Tools</a></div>
+	<div class='nav-item'><a href='/debug/logs'>Scraper Logs</a></div>
+	<div class='nav-item'><a href='/debug/high_incidence_items'>High incidence images</a></div>
+
+</div>

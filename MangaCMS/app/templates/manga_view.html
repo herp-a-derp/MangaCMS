@@ -1,0 +1,150 @@
+<!-- extend base layout -->
+
+{% import '_macros.html' as util_macros %}
+
+{%- macro manga_table_header() -%}
+	<table class='table-striped table table-bordered table-condensed' style="table-layout: fixed;">
+
+		<tr>
+				<th class="uncoloured" style="width: 40px; min-width: 40px;">Date</th>
+				<th class="uncoloured" style="width: 20px; min-width: 20px;">St</th>
+				<th class="uncoloured" style="width: 20px; min-width: 20px;">Lo</th>
+				<th class="uncoloured" style="width: 250px; min-width: 200px;">Series</th>
+				<th class="uncoloured">BaseName</th>
+				<th class="uncoloured" style="width: 45px; min-width: 45px;">Rating</th>
+				<th class="uncoloured" style="width: 105px; min-width: 105px;">DLTime</th>
+		</tr>
+
+{%- endmacro -%}
+
+{%- macro render_manga_row(row, kwargs) -%}
+
+	{%- set row_meta = generate_row_meta(row) -%}
+
+	<tr class="{{row.source_site}}_row">
+		<td>{{timeAgo(row.downloaded_at)}}</td>
+		<td bgcolor={{row_meta['statusColour']}} class="showTT" mouseovertext="{{row_meta['toolTip']}}" {{'onclick="event_%s()"' % row_meta['cellId'] if row_meta['cellId'] else ''}}>
+			{%- if row.state == 'uploaded' -%}
+				<center>↑</center>
+			{%- elif row.state == 'error' or row.state == 'removed' or row.state == 'missing' -%}
+				<script>
+					function ajaxCallback(reqData, statusStr, jqXHR)
+					{
+						console.log("Ajax request succeeded");
+						console.log(reqData);
+						console.log(statusStr);
+
+						var status = $.parseJSON(reqData);
+						console.log(status)
+						if (status.Status == "Success")
+						{
+							alert("Succeeded!\n"+status.Message)
+							// TODO Make this change the page locally, change the cell colours and stuff.
+						}
+						else
+						{
+							alert("ERROR!\n"+status.Message)
+						}
+					};
+					function event_{{row_meta['cellId']}}()
+					{
+						var reset = window.confirm("Reset download state for item ${dbId}");
+						if (reset == true)
+						{
+							var ret = ({});
+							ret["reset-download"] = "${dbId}";
+							$.ajax("/api", {"data": ret, success: ajaxCallback});
+						}
+					}
+				</script>
+			{%- endif -%}
+		</td>
+		<td bgcolor={{row_meta['locationColour']}} class="showTT" mouseovertext="{{row_meta['toolTip']}}"></td>
+		<td>{{util_macros.createReaderLink(row.series_name, row_meta['itemInfo'])}}</td>
+		<td>
+
+			{%- if row.phash_duplicate -%}
+				<span style="text-decoration: line-through; color: red;">
+					<span style="color: #000;">
+			{%- elif row.deleted -%}
+				<strike>
+			{%- endif -%}
+
+			{%- if row_meta['ratingNum'] >= 2 -%}
+				<b>
+			{%- endif -%}
+
+			{%- if row_meta['shouldBold'] -%}
+				<span style="color: red;">
+			{%- endif -%}
+
+			{{row.origin_name}}
+
+
+			{%- if row_meta['shouldBold'] -%}
+				</span>
+			{%- endif -%}
+
+			{%- if row_meta['ratingNum'] >= 2 -%}
+				</b>
+			{%- endif -%}
+
+			{%- if row.phash_duplicate -%}
+					</span>
+				</span>
+			{%- elif row.deleted -%}
+				</strike>
+			{%- endif -%}
+
+		</td>
+		<td>{{row['rating']}}</td>
+		<td>{{row_meta['terseDate']}}</td>
+	</tr>
+
+{%- endmacro -%}
+
+
+{%- macro manga_table_footer() -%}
+	</table>
+{%- endmacro -%}
+
+
+{%- macro manga_block(block_item_list, params) -%}
+	<div>
+		{{manga_table_header()}}
+			{%- for db_row in block_item_list.items -%}
+				{{ render_manga_row(db_row, params) }}
+			{%- endfor -%}
+		{{manga_table_footer()}}
+	</div>
+{%- endmacro -%}
+
+
+{%- if table_only -%}
+	Filter Params: {{params}}
+	{{manga_block(items, params)}}
+{%- elif whole_page -%}
+	{% extends "__base.html" %}
+	{% block content %}
+		{% include '_block_flash.html' %}
+		<div class='subdiv skid'>
+			<div id='manga_block'>
+				<h3>Manga {{"(distinct)" if params['distinct'] else ""}}</h3>
+
+				Filter Params: {{params}}
+				{{manga_block(items, params)}}
+
+				{{ util_macros.render_pagination(items, url_for_param=url_for_param, extra_kwargs=params) }}
+			</div>
+		</div>
+	{% endblock %}
+{%- else -%}
+	No render mode: {{table_only}}, {{whole_page}}.
+
+{%- endif -%}
+
+{%- block footer -%}
+	<script>
+		{{util_macros.mouseOverJs(key='showTT')}}
+	</script>
+{%- endblock -%}

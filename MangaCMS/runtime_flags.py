@@ -1,0 +1,2 @@
+
+IS_FLASK = False

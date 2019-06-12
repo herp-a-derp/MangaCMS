@@ -1,0 +1,195 @@
+<!-- extend base layout -->
+{%- import '_macros.html' as util_macros -%}
+
+
+{%- macro hentai_table_header() -%}
+	<table class='table-striped table table-bordered table-condensed hentai-table' style="table-layout: fixed;">
+
+		<tr>
+				<th class="uncoloured" style="width: 40px; min-width: 40px;">Date</th>
+				<th class="uncoloured" style="width: 20px; min-width: 20px;">St</th>
+				<th class="uncoloured" style="width: 20px; min-width: 20px;">Lo</th>
+				<th class="uncoloured" style="width: 15%; min-width: 200px;">Category</th>
+				<th class="uncoloured">BaseName</th>
+				<th class="uncoloured" style="width: 40%; min-width: 200px;">Tags</th>
+				<th class="uncoloured" style="width: 60px; min-width: 60px;">Size</th>
+		</tr>
+
+{%- endmacro -%}
+
+{%- macro render_hentai_row(row, kwargs) -%}
+
+	{%- set row_meta = generate_hentai_meta(row) -%}
+
+	<tr class="{{row.source_site}}_row">
+		<td>{{timeAgo(row.downloaded_at)}}</td>
+		<td bgcolor={{row_meta['statusColour']}} class="showHT" mouseovertext="{{row_meta['toolTip']}}" {{'onclick="event_%s()"' % row_meta['cellId'] if row_meta['cellId'] else ''}}>
+			{%- if row.state == 'uploaded' -%}
+				<center>↑</center>
+			{%- elif row.state == 'error' or row.state == 'removed' or row.state == 'missing' -%}
+				<script>
+					function ajaxCallback(reqData, statusStr, jqXHR)
+					{
+						console.log("Ajax request succeeded");
+						console.log(reqData);
+						console.log(statusStr);
+
+						var status = $.parseJSON(reqData);
+						console.log(status)
+						if (status.Status == "Success")
+						{
+							alert("Succeeded!\n"+status.Message)
+							// TODO Make this change the page locally, change the cell colours and stuff.
+						}
+						else
+						{
+							alert("ERROR!\n"+status.Message)
+						}
+					};
+					function event_{{row_meta['cellId']}}()
+					{
+						var reset = window.confirm("Reset download state for item ${dbId}");
+						if (reset == true)
+						{
+							var ret = ({});
+							ret["reset-download"] = "${dbId}";
+							$.ajax("/api", {"data": ret, success: ajaxCallback});
+						}
+					}
+				</script>
+			{%- endif -%}
+		</td>
+		<td bgcolor={{row_meta['locationColour']}} class="showHT" mouseovertext="{{row_meta['toolTip']}}"></td>
+		<td>
+			{%- for category_name in row_meta['unique_series'] -%}
+				{%- if category_name != None  -%}
+					<a href="{{url_for('hentai_category_view', category=category_name, page=1)}}">{{category_name}}</a>
+					{{ "," if not loop.last }}
+				{%- endif -%}
+			{%- endfor -%}
+		</td>
+		<td>
+
+			{%- if row.phash_duplicate -%}
+				<span style="text-decoration: line-through; color: red;">
+					<span style="color: #000;">
+			{%- elif row.deleted -%}
+				<strike>
+			{%- endif -%}
+
+			{%- if row_meta['fsize'] > 0 -%}
+				<a href="{{url_for('view_h_by_id', rid=row.id)}}">{{row.origin_name}}</a>
+			{%- else -%}
+				{{row.origin_name}}
+			{%- endif -%}
+
+
+			{%- if row.phash_duplicate -%}
+					</span>
+				</span>
+			{%- elif row.deleted -%}
+				</strike>
+			{%- endif -%}
+
+		</td>
+		<td class='tag-col'>
+			{%- for tag in row_meta['item-tags'] -%}
+				{%- set tag_tag_start, tag_tag_end = tag_tag(tag)%}
+				<a href='{{url_for('hentai_tag_view', tag=tag, page=1)}}'>{{tag_tag_start|safe}}{{tag}}{{tag_tag_end|safe}}</a>
+			{%- endfor -%}
+			{%- for tag in row_meta['file-tags'] -%}
+				{%- if tag not in row_meta['item-tags'] -%}
+					{%- set tag_tag_start, tag_tag_end = tag_tag(tag)%}
+					+<a href='{{url_for('hentai_tag_view', tag=tag, page=1)}}'>{{tag_tag_start|safe}}{{tag}}{{tag_tag_end|safe}}</a>
+				{%- endif -%}
+
+			{%- endfor -%}
+		</td>
+		<td {{'class="missing"' | safe if row_meta['fsize'] < 0 else "" | safe}}>
+			{%- if row_meta['fsize'] > 0 -%}
+				{{f_size_to_str(row_meta['fsize'])}}
+			{%- else -%}
+				No File!
+			{%- endif -%}
+		</td>
+	</tr>
+
+{%- endmacro -%}
+
+
+{%- macro hentai_table_footer() -%}
+	</table>
+{%- endmacro -%}
+
+
+{%- macro hentai_block(block_item_list, params) -%}
+	<div>
+		{{hentai_table_header()}}
+			{%- for db_row in block_item_list.items -%}
+				{{ render_hentai_row(db_row, params) }}
+			{%- endfor -%}
+		{{hentai_table_footer()}}
+	</div>
+{%- endmacro -%}
+
+
+
+{%- if table_only -%}
+	Filter Params: {{params}}
+		{{hentai_block(items, params)}}
+{%- elif whole_page -%}
+	{%- extends "__base.html" -%}
+	{%- block content -%}
+		{%- include '_block_flash.html' -%}
+		<div class='subdiv fuid'>
+			<div id='hentai_block'>
+				<h3>Hentai</h3>
+				Filter Params: {{params}}.<br>
+				{%- if request.args.get('include_deleted') -%}
+					<a href="{{url_for(
+								**param_superset(
+									endpoint        = url_for_param,
+									tag             = tag if tag else None,
+									category        = category if category else None,
+									source_site     = source_site if source_site else None,
+									include_deleted = False,
+									page            = page,
+									params          = request.args
+								)
+							)}}">Exclude Deleted</a>
+				{%- else -%}
+					<a href="{{url_for(
+								**param_superset(
+									endpoint        = url_for_param,
+									tag             = tag if tag else None,
+									category        = category if category else None,
+									source_site     = source_site if source_site else None,
+									include_deleted = True,
+									page            = page,
+									params          = request.args
+								)
+							)}}">Include Deleted</a>
+				{%- endif -%}
+				<span id="vp-size"></span>
+				{{hentai_block(items, params)}}
+
+				{{ util_macros.render_pagination(items, url_for_param=url_for_param, tag=tag, category=category, source_site=source_site) }}
+			</div>
+		</div>
+	{%- endblock -%}
+{%- else -%}
+	No render mode: {{table_only}}, {{whole_page}}.
+
+{%- endif -%}
+
+
+{%- block footer -%}
+
+	<script>
+		{{util_macros.mouseOverJs(key='showHT')}}
+		var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+		var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+		$("#vp-size").html(" VP: " + w.toString() + "x" + h.toString() + ".")
+	</script>
+
+{%- endblock -%}

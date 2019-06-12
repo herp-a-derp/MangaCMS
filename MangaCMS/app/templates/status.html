@@ -1,0 +1,136 @@
+<!-- extend base layout -->
+{%- import '_macros.html' as util_macros -%}
+
+
+{%- macro renderStatus(item) -%}
+	{%- set css_class = item['meta']['key'] if item['meta'] else "unk" -%}
+	<div class="extrastatediv {{plugin_key_for_name(item.name)}}_id" >
+		<strong>
+			{{item.name}}
+		</strong><br />
+		{%- if item.running -%}
+			<b>Running</b>
+		{%- else -%}
+			Not Running
+		{%- endif -%}
+		<br>
+		{%- if item.last_error > min_date() -%}
+			<a href="/errorLog">Error {{ terse_ago(item.last_error) }} ago!</a><br />
+		{%- endif -%}
+	</div>
+
+{%- endmacro -%}
+
+{%- macro renderStatus_old(item) -%}
+	<%
+
+	if vals:
+		running, runStart, lastRunDuration, lastErr = vals
+		runStart = ut.timeAgo(runStart)
+	else:
+		running, runStart, lastRunDuration, lastErr = False, "Never!", None, 0
+
+	if running:
+		runState = "<b>Running</b>"
+	else:
+		runState = "Not Running"
+
+	errored = False
+	if lastErr > (time.time() - 60*60*24): # If the last error was within the last 24 hours
+		errored = ut.timeAgo(lastErr)
+
+
+
+	%>
+	<div class="${cssClass}" >
+		<strong>
+			${name}
+		</strong><br />
+		% if errored:
+			<a href="/errorLog">Error ${errored} ago!</a><br />
+		% endif
+		${runStart}<br />
+		${runState}
+
+		% if dictKey != None:
+			% if dictKey in statusDict:
+				<%
+				keys = [DNLDED, DLING, QUEUED, FAILED]
+				pres = [key in statusDict[dictKey] for key in keys]
+
+				%>
+				% if all(pres):
+					<ul>
+						<li>Have: ${statusDict[dictKey][DNLDED]}</li>
+						<li>DLing: ${statusDict[dictKey][DLING]}</li>
+						<li>Want: ${statusDict[dictKey][QUEUED]}</li>
+						<li>Failed: ${statusDict[dictKey][FAILED]}</li>
+					</ul>
+				% endif
+			## % else:
+				## <b>WARN: No lookup dict built yet!</b>
+			% endif
+		% endif
+
+	</div>
+
+{%- endmacro -%}
+
+
+{%- extends "__base.html" -%}
+{%- block content -%}
+	{%- include '_block_flash.html' -%}
+	<div class='subdiv fuid'>
+		<div id='status_block'>
+			<h3>Status</h3>
+
+			<div class='contentdiv'>
+				<h1>Status:</h1>
+				<h4>Active Manga Plugins</h4>
+				{%- for item in states if item['name'] in scraper_dict and scraper_dict[item['name']]['type'] == 'Manga' -%}
+
+					{{ renderStatus(item) }}
+
+				{%- endfor -%}
+				<hr>
+				<h4>Active Hentai Plugins</h4>
+				{%- for item in states if item['name'] in scraper_dict and scraper_dict[item['name']]['type'] == 'Hentai' -%}
+
+					{{ renderStatus(item) }}
+
+				{%- endfor -%}
+				<hr>
+				<h4>Other plugins</h4>
+				{%- for item in states if item['name'] not in scraper_dict -%}
+
+					{{ renderStatus(item) }}
+
+				{%- endfor -%}
+				<hr>
+
+
+				<h2>Schedule:</h2>
+				<table>
+					<col width="400px">
+					<col width="200px">
+					<col width="100px">
+					{%- for jId, nextRun, state in tasks -%}
+						<tr>
+							<td>{{jId}}</td>
+							<td>{{state['time_til_job']}}</td>
+							<td>{{state | length}}</td>
+						</tr>
+					{%- endfor -%}
+				</table>
+			</div>
+
+
+		</div>
+	</div>
+{%- endblock -%}
+
+
+{%- block footer -%}
+
+
+{%- endblock -%}

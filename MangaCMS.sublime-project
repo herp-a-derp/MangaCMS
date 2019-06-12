@@ -1,0 +1,26 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		},
+		{
+			"path": "N:\\Scripts\\xaDownloader"
+		},
+		{
+			"path": "N:\\Scripts\\ReadableWebProxy"
+		}
+	],
+	"settings":
+	{
+		"pylinter":
+		{
+			"python_path":
+			[
+				"N:/Scripts/MangaCMS"
+			],
+			"use_icons": "true",
+			"working_dir": "N:/Scripts/MangaCMS"
+		}
+	}
+}

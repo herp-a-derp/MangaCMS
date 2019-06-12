@@ -1,0 +1,41 @@
+
+<html style='html: -ms-content-zooming: none; /* Disables zooming */'>
+	<head>
+		<meta charset="utf8">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0; width=device-width;">
+
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<title>Reader ({{filename}})</title>
+
+		<script src="/static/js/jquery-latest.js"></script>
+		<script src="/static/comicbook/js/comicbook.js"></script>
+		<link rel="stylesheet" href="/static/comicbook/nozoom.css">
+		<link rel="stylesheet" href="/static/comicbook/comicbook.css">
+		<link rel="shortcut icon" sizes="196x196" href="/static/comicbook/img/icon_196.png">
+		<link rel="apple-touch-icon" sizes="196x196" href="/static/comicbook/img/icon_196.png">
+		<link rel="apple-touch-icon-precomposed" sizes="196x196" href="/static/comicbook/img/icon_196.png">
+
+
+	</head>
+	<body>
+		<div style="line-height: 0;" id="canvas_container"></div>
+
+
+		<script>
+
+			var book = new ComicBook('canvas_container',  {{image_urls | safe}}, {
+				"fileName":"{{filename}}"
+			});
+
+			book.draw();
+
+			$(window).on('resize', function () {
+				book.draw();
+			});
+			console.log("Drawing book!")
+		</script>
+	</body>
+</html>
