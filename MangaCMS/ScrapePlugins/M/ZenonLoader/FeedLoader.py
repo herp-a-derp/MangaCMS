@@ -6,31 +6,31 @@ runStatus.preloadDicts = False
 
 
 import urllib.parse
+import datetime
 import time
 import calendar
 import dateutil.parser
 import settings
 
-import MangaCMSOld.ScrapePlugins.LoaderBase
+import MangaCMS.ScrapePlugins.LoaderBase
 
 # Only downlad items in language specified.
 # Set to None to disable filtering (e.g. fetch ALL THE FILES).
 DOWNLOAD_ONLY_LANGUAGE = "English"
 
-class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
+class FeedLoader(MangaCMS.ScrapePlugins.LoaderBase.LoaderBase):
 
 
 
-	loggerPath = "Main.Manga.Ze.Fl"
-	pluginName = "Comic-Zenon Magazine Link Retreiver"
-	tableKey = "ze"
-	dbName = settings.DATABASE_DB_NAME
-	tableName = "MangaItems"
-
-	urlBase    = "http://www.manga-audition.com/comic-zenon/"
-
+	logger_path = "Main.Manga.Ze.Fl"
+	plugin_name = "Comic-Zenon Magazine Link Retreiver"
+	plugin_key = "ze"
+	is_manga    = True
+	is_hentai   = False
+	is_book     = False
 
 
+	url_base    = "http://www.manga-audition.com/comic-zenon/"
 
 	def getSeriesPages(self):
 
@@ -38,7 +38,7 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 
 		ret = []
 
-		soup = self.wg.getSoup(self.urlBase)
+		soup = self.wg.getSoup(self.url_base)
 
 		main_chunk = soup.find_all("div", class_='ZenonComics')
 		for chunk in main_chunk:
@@ -58,10 +58,13 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 		for row in soup.find_all("img", class_='ReadBtn'):
 
 			item = {}
-			item["sourceUrl"]  = row.parent['href']
-			item['retreivalTime'] = time.time()
-
-			items.append(item)
+			parent = row.parent
+			if parent is not None:
+				url = parent.get("href", None)
+				if url:
+					item["source_id"]  = url
+					item['posted_at'] = datetime.datetime.now()
+					items.append(item)
 
 		return items
 
@@ -75,12 +78,15 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 
 		return ret
 
-	def getFeed(self):
+	def get_feed(self):
 		toScan = self.getSeriesPages()
-
+		toScan = set(toScan)
 		ret = []
 
 		for url in toScan:
+			if not 'www.manga-audition.com' in url:
+				continue
+
 			items = self.getChapterLinksFromSeriesPage(url)
 			for item in items:
 				if item in ret:
@@ -92,11 +98,10 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 if __name__ == '__main__':
 	import utilities.testBase as tb
 
-	with tb.testSetup():
+	with tb.testSetup(load=False):
 		fl = FeedLoader()
-		# fl.go(historical=True)
-		fl.go()
-		# fl.getChapterLinksFromSeriesPage('http://www.manga-audition.com/?p=5762')
+		fl.do_fetch_feeds()
+		# fl.getChapterLinksFromSeriesPage('https://www.manga-audition.com/comic-zenon/ikusa-no-ko-by-tetsuo-hara/')
 		# fl.getSeriesUrls()
 
 		# fl.getAllItems()

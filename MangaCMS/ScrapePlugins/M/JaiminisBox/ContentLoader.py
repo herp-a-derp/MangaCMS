@@ -1,5 +1,11 @@
 
-import WebRequest
+
+import MangaCMS.lib.logSetup
+import runStatus
+if __name__ == "__main__":
+	runStatus.preloadDicts = False
+
+
 import settings
 import os
 import os.path
@@ -7,50 +13,34 @@ import os.path
 import nameTools as nt
 
 import time
-import random
+
 import urllib.parse
-import re
-import sys
-import runStatus
+import html.parser
+import zipfile
+import datetime
 import traceback
 import bs4
-import datetime
-
+import re
+import json
+import sqlalchemy.exc
 import MangaCMS.ScrapePlugins.RetreivalBase
-import MangaCMS.ScrapePlugins.RunBase
 
 from concurrent.futures import ThreadPoolExecutor
 
 import MangaCMS.cleaner.processDownload
 
-
-HTTPS_CREDS = [
-	(        "manga.madokami.al", settings.mkSettings["login"], settings.mkSettings["passWd"]),
-	( "http://manga.madokami.al", settings.mkSettings["login"], settings.mkSettings["passWd"]),
-	("https://manga.madokami.al", settings.mkSettings["login"], settings.mkSettings["passWd"]),
-	]
-
-
 class ContentLoader(MangaCMS.ScrapePlugins.RetreivalBase.RetreivalBase):
 
-
-	logger_path = "Main.Manga.Mk.Cl"
-	plugin_name = "Manga.Madokami Content Retreiver"
-	plugin_key  = "mk"
+	logger_path = "Main.Manga.Jb.Cl"
+	plugin_name = "Jaimini's Box Content Retreiver"
+	plugin_key  = "jb"
 	is_manga    = True
 	is_hentai   = False
 	is_book     = False
 
 
-	retreival_threads = 2
 
-	urlBase = "https://manga.madokami.al/"
-
-	itemLimit = 5000
-
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.wg = WebRequest.WebGetRobust(creds=HTTPS_CREDS)
+	retreivalThreads = 1
 
 
 	def getLinkFile(self, fileUrl):
@@ -73,13 +63,6 @@ class ContentLoader(MangaCMS.ScrapePlugins.RetreivalBase.RetreivalBase):
 			originName = row.origin_name
 			source_url = row.source_id
 
-			# Delete old (now invalid) rows
-			if "manga.madokami.com" in source_url:
-				self.log.warning("Row points to old madokami! Deleting!")
-				row.tags.clear()
-				sess.delete(row)
-
-				return
 
 		target_dir, new_dir = self.locateOrCreateDirectoryForSeries(seriesName)
 		with self.row_context(dbid=link_row_id) as row:
@@ -133,20 +116,18 @@ class ContentLoader(MangaCMS.ScrapePlugins.RetreivalBase.RetreivalBase):
 		return
 
 
-	def setup(self):
-		# Muck about in the webget internal settings
-		self.wg.errorOutCount = 4
-		self.wg.retryDelay    = 5
 
 
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	import utilities.testBase as tb
 
 	with tb.testSetup():
+		cl = ContentLoader()
 
-		run = ContentLoader()
-		run.do_fetch_content()
+		# pg = 'http://dynasty-scans.com/chapters/qualia_the_purple_ch16'
+		# inMarkup = cl.wg.getpage(pg)
+		# cl.getImageUrls(inMarkup, pg)
+		cl.do_fetch_content()
+		# cl.getLink('http://www.webtoons.com/viewer?titleNo=281&episodeNo=3')
 
 

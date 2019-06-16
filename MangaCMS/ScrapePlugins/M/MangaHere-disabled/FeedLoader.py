@@ -36,14 +36,14 @@ class FeedLoader(MangaCMS.ScrapePlugins.LoaderBase.LoaderBase):
 
 		soup = self.wg.getSoup(url)
 
-		if soup.find("div", class_='manga_updates'):
-			mainDiv = soup.find("div", class_='manga_updates')
-		else:
-			raise ValueError("Could not find listing table?")
+		# if soup.find("div", class_='manga_updates'):
+		# 	mainDiv = soup.find("div", class_='line-list')
+		# else:
+		# 	raise ValueError("Could not find listing table?")
 
-		for child in mainDiv.find_all("dl"):
-			if child.dt:
-				seriesUrl = urllib.parse.urljoin(self.urlBase, child.dt.a['href'])
+		for child in soup.find_all("p", class_='manga-list-4-item-title'):
+			if child.a:
+				seriesUrl = urllib.parse.urljoin(self.urlBase, child.a['href'])
 				ret.add(seriesUrl)
 
 
@@ -76,19 +76,19 @@ class FeedLoader(MangaCMS.ScrapePlugins.LoaderBase.LoaderBase):
 	def getSeriesInfoFromSoup(self, soup):
 		# Should probably extract tagging info here. Laaaaazy
 		# MangaUpdates interface does a better job anyways.
-		titleA = soup.find("h1", class_='title')
+		titleA = soup.find("span", class_='detail-info-right-title-font')
 		return {"series_name": titleA.get_text().title()}
 
 	def getChaptersFromSeriesPage(self, soup):
-		table = soup.find('div', class_='detail_list')
+		table = soup.find('ul', class_='detail-main-list')
 
 		items = []
 		for row in table.find_all("li"):
 			if not row.a:
 				continue  # Skip the table header row
 
-			chapter = row.find("span", class_='left')
-			date    = row.find("span", class_='right')
+			chapter = row.find("p", class_='title3')
+			date    = row.find("p", class_='title2')
 
 
 			item = {}
@@ -101,7 +101,7 @@ class FeedLoader(MangaCMS.ScrapePlugins.LoaderBase.LoaderBase):
 				name = name.replace("  ", " ")
 
 			item["origin_name"] = name
-			item["source_id"]  = urllib.parse.urljoin(self.urlBase, chapter.a['href'])
+			item["source_id"]  = urllib.parse.urljoin(self.urlBase, row.a['href'])
 			dateStr = date.get_text().strip()
 			itemDate, status = parsedatetime.Calendar().parse(dateStr)
 			if status != 1:
@@ -165,6 +165,7 @@ if __name__ == '__main__':
 		# print(fl.getAllItems())
 		# fl.resetStuckItems()
 		fl.do_fetch_feeds()
+		# fl.getChapterLinkFromSeriesPage("http://www.mangahere.co/manga/go_tenba_cheerleaders/")
 		# fl.getChapterLinkFromSeriesPage("http://www.mangahere.co/manga/penguin_loves_mev/")
 		# fl.getSeriesUrls()
 

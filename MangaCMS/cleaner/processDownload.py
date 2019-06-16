@@ -9,7 +9,6 @@ import runStatus
 import deduplicator.archChecker
 import MangaCMS.ScrapePlugins.MangaScraperBase
 import MangaCMS.cleaner.archCleaner as ac
-import UploadPlugins.Madokami.uploader as up
 import MangaCMS.util.hashfile as hashfile
 
 PHASH_DISTANCE = 4

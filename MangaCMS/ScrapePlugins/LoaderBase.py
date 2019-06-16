@@ -61,6 +61,15 @@ class LoaderBase(MangaCMS.ScrapePlugins.MangaScraperBase.MangaScraperBase):
 		assert isinstance(check_dict.get("tags", []), (list, tuple)), "Tags item must be a list!"
 
 
+		time_entries = [
+				'posted_at',
+				'downloaded_at',
+			]
+		for time_tag in time_entries:
+			if time_tag in check_dict:
+				assert isinstance(check_dict[time_tag], datetime.datetime)
+
+
 	def _process_links_into_db(self, linksDicts):
 
 		self.log.info( "Inserting...")

@@ -1,9 +1,9 @@
 
 
-import MangaCMSOld.lib.logSetup
+import MangaCMS.lib.logSetup
 import runStatus
 if __name__ == "__main__":
-	MangaCMSOld.lib.logSetup.initLogging()
+	MangaCMS.lib.logSetup.initLogging()
 	runStatus.preloadDicts = False
 
 
@@ -17,22 +17,22 @@ import runStatus
 import settings
 import datetime
 
-import MangaCMSOld.ScrapePlugins.LoaderBase
+import MangaCMS.ScrapePlugins.LoaderBase
 import nameTools as nt
 
 # Only downlad items in language specified.
 # Set to None to disable filtering (e.g. fetch ALL THE FILES).
 DOWNLOAD_ONLY_LANGUAGE = "English"
 
-class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
+class FeedLoader(MangaCMS.ScrapePlugins.LoaderBase.LoaderBase):
 
 
-
-	loggerPath = "Main.Manga.Wt.Fl"
-	pluginName = "Webtoons.com Scans Link Retreiver"
-	tableKey = "wt"
-	dbName = settings.DATABASE_DB_NAME
-	tableName = "MangaItems"
+	logger_path = "Main.Manga.Wt.Fl"
+	plugin_name = "Webtoons.com Scans Link Retreiver"
+	plugin_key = "wt"
+	is_manga    = True
+	is_hentai   = False
+	is_book     = False
 
 	urlBase    = "http://www.webtoons.com/"
 	seriesBase = "http://www.webtoons.com/genre"
@@ -96,10 +96,10 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 
 
 
-				item["originName"]    = "{series} - {file}".format(series=baseInfo["title"], file=chapTitle)
-				item["sourceUrl"]     = url
-				item["seriesName"]    = baseInfo["title"].split("\n")[0].strip()
-				item["retreivalTime"] = calendar.timegm(date.timetuple())
+				item["origin_name"] = "{series} - {file}".format(series=baseInfo["title"], file=chapTitle)
+				item["source_id"]   = url
+				item["series_name"] = baseInfo["title"].split("\n")[0].strip()
+				item["posted_at"]   = date
 
 				if not item in ret:
 					hadNew = True
@@ -145,7 +145,7 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 		return ret
 
 
-	def getFeed(self, historical=False):
+	def get_feed(self, historical=False):
 		# for item in items:
 		# 	self.log.info( item)
 		#
@@ -170,22 +170,13 @@ class FeedLoader(MangaCMSOld.ScrapePlugins.LoaderBase.LoaderBase):
 		return ret
 
 
-	def go(self, historical=False):
-
-		self.resetStuckItems()
-		self.log.info("Getting feed items")
-
-		feedItems = self.getAllItems(historical=historical)
-		self.log.info("Processing feed Items")
-
-		self.processLinksIntoDB(feedItems)
-		self.log.info("Complete")
 
 
 if __name__ == '__main__':
 	fl = FeedLoader()
 	print("fl", fl)
-	fl.go(historical=True)
+	fl.do_fetch_feeds()
+	# fl.do_fetch_feeds(historical=True)
 	# fl.go()
 	# fl.getSeriesUrls()
 	# items = fl.getItemPages('http://www.webtoons.com/episodeList?titleNo=78')

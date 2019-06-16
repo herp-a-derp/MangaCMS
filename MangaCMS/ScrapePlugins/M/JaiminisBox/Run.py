@@ -9,13 +9,14 @@ import time
 
 
 class Runner(MangaCMS.ScrapePlugins.RunBase.ScraperBase):
-	loggerPath = "Main.Manga.Wr.Run"
+	loggerPath = "Main.Manga.Dy.Run"
 
-	pluginName = "WrLoader"
+	pluginName = "DyLoader"
 
-	sourceName = "WebtoonsReader"
+	sourceName = "DynastyScans"
 	feedLoader = FeedLoader
 	contentLoader = ContentLoader
+
 
 
 if __name__ == "__main__":

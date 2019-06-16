@@ -1,7 +1,6 @@
 
 
 # Ideally, all downloaded archives should run through this function.
-import UploadPlugins.Madokami.uploader as up
 import MangaCMSOld.cleaner.archCleaner as ac
 import deduplicator.archChecker
 import traceback

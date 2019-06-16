@@ -14,12 +14,7 @@ import MangaCMSOld.ScrapePlugins.M.BuMonitor.Rescan
 import MangaCMSOld.ScrapePlugins.M.Crunchyroll.Run
 import MangaCMSOld.ScrapePlugins.M.IrcGrabber.BotRunner
 import MangaCMSOld.ScrapePlugins.M.IrcGrabber.IrcEnqueueRun
-import MangaCMS.ScrapePlugins.M.Kawaii.Run
 import MangaCMSOld.ScrapePlugins.M.MangaBox.Run
-import MangaCMS.ScrapePlugins.M.MangaHere.Run
-import MangaCMS.ScrapePlugins.M.MerakiScans.Run
-import MangaCMSOld.ScrapePlugins.M.WebtoonLoader.Run            # Yeah. There is webtoon.com. and WebtoonsReader.com. Confusing much?
-import MangaCMSOld.ScrapePlugins.M.ZenonLoader.Run
 
 import MangaCMSOld.ScrapePlugins.M.FoolSlide.Modules.CanisMajorRun
 import MangaCMSOld.ScrapePlugins.M.FoolSlide.Modules.ChibiMangaRun
@@ -36,6 +31,11 @@ import MangaCMSOld.ScrapePlugins.M.FoolSlide.Modules.TripleSevenRun
 import MangaCMSOld.ScrapePlugins.M.FoolSlide.Modules.TwistedHelRun
 import MangaCMSOld.ScrapePlugins.M.FoolSlide.Modules.VortexRun
 
+import MangaCMS.ScrapePlugins.M.Kawaii.Run
+# import MangaCMS.ScrapePlugins.M.MangaHere.Run
+import MangaCMS.ScrapePlugins.M.MerakiScans.Run
+import MangaCMS.ScrapePlugins.M.ZenonLoader.Run
+import MangaCMS.ScrapePlugins.M.JaiminisBox.Run
 
 import MangaCMS.ScrapePlugins.M.MangaStreamLoader.Run
 import MangaCMS.ScrapePlugins.M.DynastyLoader.Run
@@ -44,6 +44,7 @@ import MangaCMS.ScrapePlugins.M.MangaZuki.Run
 import MangaCMS.ScrapePlugins.M.McLoader.Run
 import MangaCMS.ScrapePlugins.M.KissLoader.Run
 
+import MangaCMS.ScrapePlugins.M.WebtoonLoader.Run            # Yeah. There is webtoon.com. and WebtoonsReader.com. Confusing much?
 import MangaCMS.ScrapePlugins.M.YoMangaLoader.Run
 import MangaCMS.ScrapePlugins.M.MangaMadokami.Run
 
@@ -78,13 +79,14 @@ scrapePlugins = {
 	11  : (MangaCMS.ScrapePlugins.M.McLoader.Run,                        hours(12)),  # every 12 hours, it's just a single scanlator site.
 	# 12  : (MangaCMSOld.ScrapePlugins.M.IrcGrabber.IrcEnqueueRun,            hours(12)),  # Queue up new items from IRC bots.
 	# 15  : (MangaCMSOld.ScrapePlugins.M.IrcGrabber.BotRunner,                hours( 1)),  # Irc bot never returns. It runs while the app is live. Rerun interval doesn't matter, as a result.
-	16  : (MangaCMS.ScrapePlugins.M.MangaHere.Run,                       hours(12)),
-	17  : (MangaCMSOld.ScrapePlugins.M.WebtoonLoader.Run,                   hours( 8)),
+	# 16  : (MangaCMS.ScrapePlugins.M.MangaHere.Run,                       hours(12)),
+	17  : (MangaCMS.ScrapePlugins.M.WebtoonLoader.Run,                   hours( 8)),
 	18  : (MangaCMS.ScrapePlugins.M.DynastyLoader.Run,                      hours( 8)),
 	#19  : (MangaCMS.ScrapePlugins.M.KissLoader.Run,                      hours( 1)),
 	20  : (MangaCMSOld.ScrapePlugins.M.Crunchyroll.Run,                     hours( 4)),
+	21  : (MangaCMS.ScrapePlugins.M.JaiminisBox.Run,                          hours(12)),
 	22  : (MangaCMS.ScrapePlugins.M.Kawaii.Run,                          hours(12)),
-	23  : (MangaCMSOld.ScrapePlugins.M.ZenonLoader.Run,                     hours(24)),
+	23  : (MangaCMS.ScrapePlugins.M.ZenonLoader.Run,                     hours(24)),
 	24  : (MangaCMSOld.ScrapePlugins.M.MangaBox.Run,                        hours(12)),
 	27  : (MangaCMS.ScrapePlugins.M.MerakiScans.Run,                     hours(12)),
 	28  : (MangaCMS.ScrapePlugins.M.MangaZuki.Run,                          hours(12)),
@@ -212,9 +214,9 @@ if __name__ == "__main__":
 				# MangaCMS.ScrapePlugins.M.MangaZuki.Run,
 				# MangaCMS.ScrapePlugins.M.McLoader.Run,
 				# MangaCMS.ScrapePlugins.M.MerakiScans.Run,
-				# MangaCMSOld.ScrapePlugins.M.WebtoonLoader.Run,
+				# MangaCMS.ScrapePlugins.M.WebtoonLoader.Run,
 				# MangaCMS.ScrapePlugins.M.YoMangaLoader.Run,
-				# MangaCMSOld.ScrapePlugins.M.ZenonLoader.Run,
+				# MangaCMS.ScrapePlugins.M.ZenonLoader.Run,
 				# MangaCMSOld.ScrapePlugins.M.BuMonitor.Rescan,
 				# MangaCMSOld.ScrapePlugins.M.BuMonitor.Run,
 
