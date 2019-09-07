@@ -1,7 +1,7 @@
 webrequest==0.0.59
 sqlalchemy_utils==0.34.2
 mdx_linkify==1.2
-apscheduler==3.5.3
+apscheduler==3.6.1
 psycopg2==2.7.7
 babel==2.6.0
 sqlalchemy_jsonfield==0.7.1
