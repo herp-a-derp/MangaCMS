@@ -23,7 +23,7 @@ paramiko==2.6.0
 statsd==3.3.0
 python-sql==1.0.0
 irc==17.1
-python-magic
+python-magic==0.4.15
 git+https://github.com/fake-name/UniversalArchiveInterface.git
 rpyc
 sqlalchemy-citext
