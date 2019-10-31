@@ -1,5 +1,5 @@
 webrequest==0.0.60
-sqlalchemy_utils==0.33.11
+sqlalchemy_utils==0.34.2
 mdx_linkify==1.2
 apscheduler==3.5.3
 psycopg2==2.7.7
