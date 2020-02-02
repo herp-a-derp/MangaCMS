@@ -29,5 +29,5 @@ rpyc==4.1.4
 sqlalchemy-citext==1.3-0
 parsedatetime==2.5
 cython==0.29.14
-tqdm
+tqdm==4.42.0
 natsort
