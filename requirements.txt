@@ -25,7 +25,7 @@ python-sql==1.1.0
 irc==18.0.0
 python-magic==0.4.15
 git+https://github.com/fake-name/UniversalArchiveInterface.git
-rpyc
+rpyc==4.1.4
 sqlalchemy-citext
 parsedatetime
 cython
