@@ -19,7 +19,7 @@ pyinotify==0.9.6
 python-Levenshtein==0.12.0
 ftfy==5.6
 colorama==0.4.3
-paramiko
+paramiko==2.7.1
 statsd
 python-sql
 irc
