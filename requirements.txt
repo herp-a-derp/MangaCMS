@@ -28,6 +28,6 @@ git+https://github.com/fake-name/UniversalArchiveInterface.git
 rpyc==4.1.5
 sqlalchemy-citext==1.6.3
 parsedatetime==2.5
-cython
+cython==0.29.16
 tqdm
 natsort
