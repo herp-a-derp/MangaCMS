@@ -20,7 +20,7 @@ python-Levenshtein==0.12.0
 ftfy==5.7
 colorama==0.4.3
 paramiko==2.7.1
-statsd
+statsd==3.3.0
 python-sql
 irc
 python-magic
