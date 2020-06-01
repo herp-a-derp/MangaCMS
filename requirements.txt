@@ -1,4 +1,4 @@
-webrequest==0.0.52
+webrequest==0.0.72
 sqlalchemy_utils==0.33.11
 mdx_linkify==1.2
 apscheduler==3.5.3
