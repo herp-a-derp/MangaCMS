@@ -4,7 +4,7 @@ mdx_linkify==1.2
 apscheduler==3.6.3
 psycopg2==2.8.5
 babel==2.8.0
-sqlalchemy_jsonfield==0.7.1
+sqlalchemy_jsonfield==0.9.0
 flask==1.0.2
 alembic==1.0.6
 flask-wtf==0.14.2
