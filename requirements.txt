@@ -27,7 +27,7 @@ python-magic==0.4.22
 git+https://github.com/fake-name/UniversalArchiveInterface.git
 rpyc==5.0.1
 sqlalchemy-citext==1.8.0
-parsedatetime
+parsedatetime==2.6
 cython
 tqdm
 natsort
