@@ -30,4 +30,4 @@ sqlalchemy-citext==1.8.0
 parsedatetime==2.6
 cython==0.29.24
 tqdm==4.62.1
-natsort
+natsort==7.1.1
