@@ -18,7 +18,7 @@ flask_caching==1.10.1
 pyinotify==0.9.6
 python-Levenshtein==0.12.2
 ftfy==6.0.3
-colorama
+colorama==0.4.4
 paramiko
 statsd
 python-sql
