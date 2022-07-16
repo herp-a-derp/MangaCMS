@@ -22,7 +22,7 @@ colorama==0.4.5
 paramiko==2.11.0
 statsd==3.3.0
 python-sql==1.4.0
-irc
+irc==20.1.0
 python-magic
 git+https://github.com/fake-name/UniversalArchiveInterface.git
 rpyc
