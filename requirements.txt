@@ -14,7 +14,7 @@ beautifulsoup4==4.11.1
 flask_sqlalchemy==3.0.0
 flask-debugtoolbar==0.13.1
 
-flask_caching==1.4.0 
+flask_caching==2.0.1 
 pyinotify
 python-Levenshtein
 ftfy
