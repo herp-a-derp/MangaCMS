@@ -15,7 +15,7 @@ flask_sqlalchemy==3.0.2
 flask-debugtoolbar==0.13.1
 
 flask_caching==2.0.1 
-pyinotify
+pyinotify==0.9.6
 python-Levenshtein
 ftfy
 colorama
