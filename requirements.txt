@@ -12,7 +12,7 @@ cherrypy==18.9.0
 pyramid==2.0.2
 beautifulsoup4==4.12.2
 flask_sqlalchemy==3.1.1
-flask-debugtoolbar==0.10.1
+flask-debugtoolbar==0.14.1
 
 flask_caching==1.4.0 
 pyinotify
