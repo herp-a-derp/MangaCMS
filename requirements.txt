@@ -17,7 +17,7 @@ flask-debugtoolbar==0.15.0
 flask_caching==2.1.0 
 pyinotify==0.9.6
 python-Levenshtein==0.25.1
-ftfy
+ftfy==6.2.0
 colorama
 paramiko
 statsd
